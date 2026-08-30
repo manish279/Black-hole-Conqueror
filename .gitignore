@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.node_modules.lock
+
+# build / framework caches
+dist/
+.output/
+.nitro/
+.tanstack/
+.vercel/
+*.tsbuildinfo
+
+# sandbox / local-only
+.grok/
+artifacts/
+screenshots/
+AGENTS.md
+.project_id
+startup.sh
+*.log
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# python leftovers (legacy repo gitignore)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
