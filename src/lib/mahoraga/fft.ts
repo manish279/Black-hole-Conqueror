@@ -82,6 +82,30 @@ export function nuPPeak(psd: Float64Array, dt: number, minHz = 0.1) {
   return { hz: binHz(best, n, dt), power: psd[best], bin: best, nuP: bestV };
 }
 
+/** Shared Dual-TF grid: νP(ν) resampled onto 0–2 Hz. Never fused with time residuals. */
+export const NUP_FMAX = 2;
+export const NUP_BINS = 32;
+
+export function nuPVector(x: ArrayLike<number>, dt: number, nBins = NUP_BINS, fMax = NUP_FMAX) {
+  const psd = periodogram(x);
+  const n = x.length;
+  const out = new Float32Array(nBins);
+  for (let b = 0; b < nBins; b++) {
+    const f0 = (b / nBins) * fMax;
+    const f1 = ((b + 1) / nBins) * fMax;
+    let acc = 0;
+    let w = 0;
+    for (let i = 1; i < psd.length; i++) {
+      const hz = binHz(i, n, dt);
+      if (hz < f0 || hz >= f1) continue;
+      acc += hz * psd[i];
+      w += 1;
+    }
+    out[b] = w ? acc / w : 0;
+  }
+  return out;
+}
+
 export function spectrogram(x: ArrayLike<number>, nfft = 128, hop = 16) {
   const frames: Float64Array[] = [];
   const tmp = new Float64Array(nfft);
