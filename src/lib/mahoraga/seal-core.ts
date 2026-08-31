@@ -15,9 +15,11 @@ export function sealedNovelty(row: {
   scale: WindowObs["scale"];
   trajectory: number;
   belloniClass?: string | null;
+  sourceId?: WindowObs["sourceId"];
 }): ScoredWindow["novelty"] {
   if (row.conformalP > 0.1) return "normal";
   if (row.j1820Distance < 0.28) return "calibration";
+  if (row.sourceId === "j1820") return "calibration";
   if (row.scale === "daily-real") {
     if (row.grmhdSigma > 2.2 && row.ensemble > 1.3 && row.trajectory > 0.7) return "physical";
     return "statistical";
@@ -39,7 +41,9 @@ export function fiveStarSealed(s: {
   novelty: ScoredWindow["novelty"];
   scale: WindowObs["scale"];
   belloniClass?: string | null;
+  sourceId?: WindowObs["sourceId"];
 }) {
+  if (s.sourceId === "j1820") return false;
   if (s.scale === "daily-real") return false;
   if (s.scale === "timing-real" && s.belloniClass && s.belloniClass !== "unlisted") return false;
   if (s.scale !== "timing-twin" && s.scale !== "timing-real") return false;
